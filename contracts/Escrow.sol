@@ -43,11 +43,7 @@ contract Escrow {
         );
     }
 
-    function deposit(bytes32 _productId)
-        external
-        payable
-        onlyBuyer(_productId)
-    {
+    function pay(bytes32 _productId) external payable onlyBuyer(_productId) {
         require(
             Transactions[_productId].seller != address(0),
             "Transaction does not exist!"
