@@ -10,7 +10,7 @@ contract Escrow {
 
     struct Transaction {
         address buyer;
-        address payable seller;
+        address seller;
         uint256 price;
         State state;
     }
@@ -28,7 +28,6 @@ contract Escrow {
     function createTransaction(
         bytes32 _productId,
         address _buyer,
-        address payable _seller,
         uint256 _price
     ) external {
         require(
@@ -38,7 +37,7 @@ contract Escrow {
 
         Transactions[_productId] = Transaction(
             _buyer,
-            _seller,
+            msg.sender,
             _price,
             State.AWAITING_PAYMENT
         );
@@ -71,7 +70,7 @@ contract Escrow {
     {
         require(
             Transactions[_productId].state == State.AWAITING_DELIVERY,
-            "You haven't paid the invoice!"
+            "Transaction is not awaiting delivery!"
         );
         Transactions[_productId].state = State.COMPLETE;
 
@@ -81,7 +80,11 @@ contract Escrow {
         require(sent, "Delivery confirmed. Payment has been sent to seller");
     }
 
-    function refund(bytes32 _productId) external onlyBuyer(_productId) {
+    function refund(bytes32 _productId) external {
+        require(
+            msg.sender == Transactions[_productId].seller,
+            "Only the seller can refund the transaction!"
+        );
         require(
             Transactions[_productId].state == State.AWAITING_DELIVERY,
             "You can't refund completed transaction!"
