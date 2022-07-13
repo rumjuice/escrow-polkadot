@@ -1,5 +1,1 @@
-var Escrow = artifacts.require("Escrow");
-
-module.exports = function (deployer) {
-  deployer.deploy(Escrow);
-};
+module.exports = require("./deploy_contracts")(artifacts, web3);
