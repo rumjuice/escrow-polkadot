@@ -1,5 +1,5 @@
-var MyToken = artifacts.require("MyToken");
+var Escrow = artifacts.require("Escrow");
 
 module.exports = function (deployer) {
-  deployer.deploy(MyToken, "8000000000000000000000000");
+  deployer.deploy(Escrow);
 };
