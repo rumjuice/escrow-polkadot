@@ -8,47 +8,90 @@ contract Escrow {
         COMPLETE
     }
 
-    State public currState;
+    struct Transaction {
+        address buyer;
+        address payable seller;
+        uint256 price;
+        State state;
+    }
 
-    address public buyer;
-    address payable public seller;
+    mapping(bytes32 => Transaction) Transactions;
 
-    // MODIFIER
-
-    modifier onlyBuyer() {
-        require(msg.sender == buyer, "Only the buyer can call this function!");
+    modifier onlyBuyer(bytes32 _productId) {
+        require(
+            msg.sender == Transactions[_productId].buyer,
+            "Only the buyer can call this function!"
+        );
         _;
     }
 
-    // CONSTRUCTOR
+    function createTransaction(
+        bytes32 _productId,
+        address _buyer,
+        address payable _seller,
+        uint256 _price
+    ) external {
+        require(
+            Transactions[_productId].seller == address(0),
+            "Transaction already exist!"
+        );
 
-    constructor(address _buyer, address payable _seller) {
-        buyer = _buyer;
-        seller = _seller;
+        Transactions[_productId] = Transaction(
+            _buyer,
+            _seller,
+            _price,
+            State.AWAITING_PAYMENT
+        );
     }
 
-    // FUNCTIONS
-
-    function deposit() external payable onlyBuyer {
+    function deposit(bytes32 _productId)
+        external
+        payable
+        onlyBuyer(_productId)
+    {
         require(
-            currState == State.AWAITING_PAYMENT,
+            Transactions[_productId].seller != address(0),
+            "Transaction does not exist!"
+        );
+        require(
+            Transactions[_productId].state == State.AWAITING_PAYMENT,
             "Payment has already been made!"
         );
-        currState = State.AWAITING_DELIVERY;
-    }
-
-    function confirmDelivery() external onlyBuyer {
         require(
-            currState == State.AWAITING_DELIVERY,
-            "You must be awaiting delivery in order to confirm delivery!"
+            msg.value == Transactions[_productId].price,
+            "The amount should match!"
         );
-        seller.transfer(address(this).balance);
-        currState = State.COMPLETE;
+
+        Transactions[_productId].state = State.AWAITING_DELIVERY;
     }
 
-    // function refund() onlyBuyer external {
-    //      have a timer to set a time limit for confirming delivery
-    //      if buyer calls this refund function, and the time limit has passed,
-    //      the buyer can get their money refunded from the smart contract
-    // }
+    function confirmDelivery(bytes32 _productId)
+        external
+        onlyBuyer(_productId)
+    {
+        require(
+            Transactions[_productId].state == State.AWAITING_DELIVERY,
+            "You haven't paid the invoice!"
+        );
+        Transactions[_productId].state = State.COMPLETE;
+
+        (bool sent, ) = Transactions[_productId].seller.call{
+            value: Transactions[_productId].price
+        }("");
+        require(sent, "Delivery confirmed. Payment has been sent to seller");
+    }
+
+    function refund(bytes32 _productId) external onlyBuyer(_productId) {
+        require(
+            Transactions[_productId].state == State.AWAITING_DELIVERY,
+            "You can't refund completed transaction!"
+        );
+
+        Transactions[_productId].state = State.COMPLETE;
+
+        (bool sent, ) = Transactions[_productId].buyer.call{
+            value: Transactions[_productId].price
+        }("");
+        require(sent, "Refund complete");
+    }
 }
