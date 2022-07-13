@@ -1,17 +1,30 @@
 {
   "compilerOptions": {
-    "lib": ["ES2018"],
-    "module": "CommonJS",
-    "target": "ES2018",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "outDir": "dist",
+    "moduleResolution": "node",
+    "module": "ESNext",
+    "target": "ES5",
     "strict": true,
     "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "noImplicitAny": true,
+    "removeComments": true,
+    "useUnknownInCatchVariables": false,
+    "noFallthroughCasesInSwitch": true,
+    "jsx": "react-jsx",
     "types": ["@types/node", "@types/chai", "@types/mocha"],
     "typeRoots": ["./node_modules/@types", "./types"]
   },
   "include": [
     "**/*.ts",
+    "src",
     "migrations/1_initial_migration.js",
     "migrations/2_deploy_contracts.js"
   ],
-  "exclude": ["node_modules", "build", "cache", "artifacts"]
+  "exclude": ["node_modules", "build", "cache", "artifacts", "*.html"]
 }
