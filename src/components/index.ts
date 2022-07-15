@@ -1,3 +1,4 @@
 import CreateTransaction from "./CreateTransaction";
+import Input from "./Input";
 
-export { CreateTransaction };
+export { CreateTransaction, Input };
