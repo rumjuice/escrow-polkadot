@@ -23,7 +23,7 @@ module.exports = {
             "Please enter a private key with funds, you can use the default one"
           );
         }
-        return new HDWalletProvider(privateKeyDev, process.env.DEV_URL);
+        return new HDWalletProvider(privateKeyDev, "http://localhost:9933/");
       },
       network_id: 1281,
     },
@@ -42,7 +42,7 @@ module.exports = {
         }
         return new HDWalletProvider(
           privateKeyMoonbase,
-          process.env.MOONBASE_URL
+          "https://rpc.api.moonbase.moonbeam.network"
         );
       },
       network_id: 1287,
