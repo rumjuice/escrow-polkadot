@@ -1,10 +1,16 @@
 import { ReactElement, useCallback } from "react";
 import { CreateTransaction } from "./components";
 import { Transaction } from "./Model";
+import { createTransaction } from "./repos";
 
 function App(): ReactElement {
-  const handleCreate = useCallback((values: Transaction) => {
-    console.log(values);
+  const handleCreate = useCallback(async (values: Transaction) => {
+    try {
+      const res = await createTransaction(values);
+      alert(`Create transaction success! Tx hash: ${res.hash}`);
+    } catch (error) {
+      alert(`Failed! ${error}`);
+    }
   }, []);
 
   return (
