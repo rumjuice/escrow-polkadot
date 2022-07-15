@@ -15,9 +15,9 @@ contract Escrow {
         State state;
     }
 
-    mapping(bytes32 => Transaction) Transactions;
+    mapping(uint32 => Transaction) public Transactions;
 
-    modifier onlyBuyer(bytes32 _productId) {
+    modifier onlyBuyer(uint32 _productId) {
         require(
             msg.sender == Transactions[_productId].buyer,
             "Only the buyer can call this function!"
@@ -26,7 +26,7 @@ contract Escrow {
     }
 
     function createTransaction(
-        bytes32 _productId,
+        uint32 _productId,
         address _buyer,
         uint256 _price
     ) external {
@@ -43,7 +43,7 @@ contract Escrow {
         );
     }
 
-    function pay(bytes32 _productId) external payable onlyBuyer(_productId) {
+    function pay(uint32 _productId) external payable onlyBuyer(_productId) {
         require(
             Transactions[_productId].seller != address(0),
             "Transaction does not exist!"
@@ -60,10 +60,7 @@ contract Escrow {
         Transactions[_productId].state = State.AWAITING_DELIVERY;
     }
 
-    function confirmDelivery(bytes32 _productId)
-        external
-        onlyBuyer(_productId)
-    {
+    function confirmDelivery(uint32 _productId) external onlyBuyer(_productId) {
         require(
             Transactions[_productId].state == State.AWAITING_DELIVERY,
             "Transaction is not awaiting delivery!"
@@ -76,7 +73,7 @@ contract Escrow {
         require(sent, "Delivery confirmed. Payment has been sent to seller");
     }
 
-    function refund(bytes32 _productId) external {
+    function refund(uint32 _productId) external {
         require(
             msg.sender == Transactions[_productId].seller,
             "Only the seller can refund the transaction!"
