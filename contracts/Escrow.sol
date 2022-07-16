@@ -15,7 +15,7 @@ contract Escrow {
         State state;
     }
 
-    mapping(uint32 => Transaction) public Transactions;
+    mapping(uint32 => Transaction) Transactions;
 
     modifier onlyBuyer(uint32 _productId) {
         require(
@@ -23,6 +23,14 @@ contract Escrow {
             "Only the buyer can call this function!"
         );
         _;
+    }
+
+    function getTransaction(uint32 _productId)
+        external
+        view
+        returns (Transaction memory)
+    {
+        return Transactions[_productId];
     }
 
     function createTransaction(
