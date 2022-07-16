@@ -1,10 +1,10 @@
 import { useFormik } from "formik";
 import { FC } from "react";
 import { Button, Input } from ".";
-import { Transaction } from "../Model";
+import { CreateTransaction } from "../Model";
 
 interface Props {
-  onSubmit(values: Omit<Transaction, "seller">): void;
+  onSubmit(values: CreateTransaction): void;
 }
 
 const CreateTransaction: FC<Props> = ({ onSubmit }) => {

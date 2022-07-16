@@ -1,9 +1,9 @@
 import { TransactionResponse } from "@ethersproject/abstract-provider";
-import { Transaction } from "../Model";
+import { CreateTransaction } from "../Model";
 import contract from "./Blockchain.provider";
 
 async function createTransaction(
-  params: Transaction
+  params: CreateTransaction
 ): Promise<TransactionResponse> {
   return await contract.createTransaction(
     params.productId,
