@@ -13,17 +13,17 @@ const TransactionDetail: FC<Props> = ({ transaction, onPay, onConfirm }) => {
     switch (transaction.state) {
       case State.AWAITING_DELIVERY:
         return (
-          <span className="font-medium text-emerald-600">
+          <span className="font-medium text-emerald-700">
             Awaiting Delivery
           </span>
         );
       case State.AWAITING_PAYMENT:
         return (
-          <span className="font-medium text-amber-600">Awaiting Payment</span>
+          <span className="font-medium text-amber-700">Awaiting Payment</span>
         );
       default:
         return (
-          <span className="font-medium text-sky-600">
+          <span className="font-medium text-sky-700">
             Transaction Completed
           </span>
         );

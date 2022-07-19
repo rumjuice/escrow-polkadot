@@ -6,7 +6,7 @@ import {
   TransactionDetail,
 } from "./components";
 import { CreateTransaction, Transaction } from "./Model";
-import { checkTransaction, createTransaction } from "./repos";
+import { checkTransaction, createTransaction, pay } from "./repos";
 
 function App(): ReactElement {
   const [transaction, setTransaction] = useState<Transaction>();
@@ -16,7 +16,7 @@ function App(): ReactElement {
       const tx = await createTransaction(values);
       alert(`Create transaction success! Tx hash: ${tx.hash}`);
     } catch (error) {
-      alert(`Failed! ${error}`);
+      alert(`Failed! ${error.data.message}`);
     }
   }, []);
 
@@ -40,6 +40,20 @@ function App(): ReactElement {
     }
   }, []);
 
+  const handlePay = useCallback(async (productId: string, price: string) => {
+    try {
+      const tx = await pay(productId, price);
+
+      setTimeout(() => {
+        handleCheck(productId);
+      }, 5000);
+
+      alert(`Payment successful! Tx hash: ${tx.hash}`);
+    } catch (error) {
+      alert(`Payment failed! ${error.data.message}`);
+    }
+  }, []);
+
   return (
     <div className="h-full w-screen bg-slate-50 pb-4">
       <div className="flex flex-col items-center w-full sm:w-3/4 lg:w-1/2 xl:w-1/3 m-auto gap-2">
@@ -54,7 +68,7 @@ function App(): ReactElement {
           {transaction && (
             <TransactionDetail
               transaction={transaction}
-              onPay={() => null}
+              onPay={() => handlePay(transaction.productId, transaction.price)}
               onConfirm={() => null}
             />
           )}
