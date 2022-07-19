@@ -1,10 +1,10 @@
 import { useFormik } from "formik";
 import { FC } from "react";
 import { Button, Input } from ".";
-import { CreateTransaction } from "../Model";
+import { CreateTransaction as CreateTx } from "../Model";
 
 interface Props {
-  onSubmit(values: CreateTransaction): void;
+  onSubmit(values: CreateTx): void;
 }
 
 const CreateTransaction: FC<Props> = ({ onSubmit }) => {
@@ -49,7 +49,9 @@ const CreateTransaction: FC<Props> = ({ onSubmit }) => {
           placeholder="Input product price"
           onChange={formik.handleChange}
         />
-        <Button title="Create" onSubmit={() => formik.handleSubmit()} />
+        <div className="ml-auto mt-2">
+          <Button title="Create" onSubmit={() => formik.handleSubmit()} />
+        </div>
       </div>
     </div>
   );

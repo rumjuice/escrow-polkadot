@@ -33,10 +33,9 @@ const CheckTransaction: FC<Props> = ({ onSubmit }) => {
           value={formik.values.productId}
           onChange={formik.handleChange}
         />
-        <Button
-          title="Check Transaction"
-          onSubmit={() => formik.handleSubmit()}
-        />
+        <div className="ml-auto mt-2">
+          <Button title="Check" onSubmit={() => formik.handleSubmit()} />
+        </div>
       </div>
     </div>
   );
